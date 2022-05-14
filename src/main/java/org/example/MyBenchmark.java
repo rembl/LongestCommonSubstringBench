@@ -22,26 +22,29 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
-
 package org.example;
 
+import org.openjdk.jmh.runner.RunnerException;
+import org.openjdk.jmh.runner.options.Options;
+import org.openjdk.jmh.runner.options.OptionsBuilder;
 import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.runner.Runner;
 
 import java.util.concurrent.TimeUnit;
 
-
+@BenchmarkMode(Mode.AverageTime)
+@OutputTimeUnit(TimeUnit.MICROSECONDS)
+@State(Scope.Thread)
 public class MyBenchmark {
 
-    @Benchmark @Fork(1) @BenchmarkMode(Mode.AverageTime) @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public static void main(String[] args) throws RunnerException {
+        Options opt = new OptionsBuilder()
+                .include(MyBenchmark.class.getSimpleName())
+                .forks(1)
+                .build();
 
-    public void testMethod() {
-        String first = "abcde";
-        String second = "fgbcd";
-
-        //longestCommonSubstringOne(first, second);
-        longestCommonSubstringTwo(first, second);
+        new Runner(opt).run();
     }
-
 
     /**
      * Наибольшая общая подстрока.
@@ -55,8 +58,10 @@ public class MyBenchmark {
      *
      * Для каждой подстроки первого слова метод ищет идентичные подстроки во втором слове методом перебора
      */
-
-    static public String longestCommonSubstringOne(String first, String second) {
+    @Benchmark
+    static public String longestCommonSubstringOne() {
+        String first = "aaaaa";
+        String second = "aaaaa";
 
         //сложность O(first*second*min(first, second))
         //память O(1)
@@ -94,17 +99,19 @@ public class MyBenchmark {
      * там записывается число, равное длине общей подстроки, а его можно узнать проверив предыдущее значение в
      * таблице по диагонали.
      */
-
-    static public String longestCommonSubstringTwo(String firs, String second) {
+    @Benchmark
+    static public String longestCommonSubstringTwo() {
+        String first = "aaaaa";
+        String second = "aaaaa";
 
         //сложность O(firs*second)
         //память O(firs*second)
 
-        if (firs == null || second == null || firs.length() == 0 || second.length() == 0) return "";
+        if (first == null || second == null || first.length() == 0 || second.length() == 0) return "";
 
-        if (firs.equals(second)) return firs;
+        if (first.equals(second)) return first;
 
-        int[][] matrix = new int[firs.length()][];
+        int[][] matrix = new int[first.length()][];
 
         int maxLength = 0;
         int maxIndex = 0;
@@ -114,7 +121,7 @@ public class MyBenchmark {
             matrix[i] = new int[second.length()];
 
             for (int j = 0; j < matrix[i].length; j++) {
-                if (firs.charAt(i) == second.charAt(j)) {
+                if (first.charAt(i) == second.charAt(j)) {
 
                     if (i != 0 && j != 0) matrix[i][j] = matrix[i - 1][j - 1] + 1;
                     else matrix[i][j] = 1;
@@ -126,7 +133,7 @@ public class MyBenchmark {
                 }
             }
         }
-        return firs.substring(maxIndex - maxLength + 1, maxIndex + 1);
+        return first.substring(maxIndex - maxLength + 1, maxIndex + 1);
     }
 
 }
