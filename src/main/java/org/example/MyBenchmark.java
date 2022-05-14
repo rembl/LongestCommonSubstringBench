@@ -37,6 +37,12 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Thread)
 public class MyBenchmark {
 
+    @Param({"2", "5", "8"})
+    public int substringLength;
+
+    @Param({"10", "100", "1000"})
+    public int wordLength;
+
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(MyBenchmark.class.getSimpleName())
@@ -59,9 +65,20 @@ public class MyBenchmark {
      * Для каждой подстроки первого слова метод ищет идентичные подстроки во втором слове методом перебора
      */
     @Benchmark
-    static public String longestCommonSubstringOne() {
-        String first = "aaaaa";
-        String second = "aaaaa";
+    public String longestCommonSubstringOne() {
+        StringBuilder firstB = new StringBuilder();
+        StringBuilder secondB = new StringBuilder();
+
+        for (int i = 0; i < (wordLength * substringLength) / 10; i++) {
+            firstB.append("a");
+            secondB.append("a");
+        }
+        for (int i = (wordLength * substringLength) / 10; i < wordLength; i++) {
+            firstB.append("1");
+            secondB.append("2");
+        }
+        String first = firstB.toString();
+        String second = secondB.toString();
 
         //сложность O(first*second*min(first, second))
         //память O(1)
@@ -100,9 +117,20 @@ public class MyBenchmark {
      * таблице по диагонали.
      */
     @Benchmark
-    static public String longestCommonSubstringTwo() {
-        String first = "aaaaa";
-        String second = "aaaaa";
+    public String longestCommonSubstringTwo() {
+        StringBuilder firstB = new StringBuilder();
+        StringBuilder secondB = new StringBuilder();
+
+        for (int i = 0; i < wordLength * substringLength; i++) {
+            firstB.append("a");
+            secondB.append("a");
+        }
+        for (int i = wordLength * substringLength; i < wordLength; i++) {
+            firstB.append("1");
+            secondB.append("2");
+        }
+        String first = firstB.toString();
+        String second = secondB.toString();
 
         //сложность O(firs*second)
         //память O(firs*second)
