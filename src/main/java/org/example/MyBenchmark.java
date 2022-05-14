@@ -47,7 +47,7 @@ public class MyBenchmark {
     public String second = "";
 
 
-    @Setup(Level.Invocation)
+    @Setup(Level.Trial)
     public void setupWords() {
         StringBuilder firstB = new StringBuilder();
         StringBuilder secondB = new StringBuilder();
